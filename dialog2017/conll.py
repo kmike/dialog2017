@@ -33,7 +33,7 @@ def to_token(line, opcorpora=False):
     if opcorpora:
         # see https://github.com/dialogue-evaluation/morphoRuEval-2017/issues/5
         parts = parts[:3] + parts[4:5]
-    parts[1] = parts[1].lower()  # lemma
+    parts[1] = parts[1]  # lemma
     parts[3] = parse_tag(parts[3])  # tag
     # parts[4] = parse_tag(parts[4])  # extra tags
     return parts
@@ -54,3 +54,12 @@ def iter_sentences(corpus, opencorpora=False):
                 raise
     if sent:
         yield sent
+
+
+def conll_line(idx, word, lemma, pos, tags):
+    if isinstance(tags, list):
+        if tags:
+            tags = "|".join(tags)
+        else:
+            tags = "_"
+    return "\t".join([str(idx), word, lemma, pos, tags])
