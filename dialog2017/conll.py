@@ -3,16 +3,21 @@
 Module with utilities for reading dialog2017 annotated corpora.
 
 Parse a corpus::
-
-    corpus_lines = read_lines('corpus.txt')
-    sents = list(iter_sentences(corpus_lines))
+    
+    sents = read_sents('corpus.txt')
     
 """
 
 
-def read_lines(name):
-    with open(name, 'rb') as f:
+def read_lines(path):
+    with open(path, 'rb') as f:
         return f.read().decode('utf8').splitlines()
+
+
+def read_sents(path, opencorpora=False):
+    corpus_lines = read_lines(path)
+    sents_iter = iter_sentences(corpus_lines, opencorpora)
+    return list(sents_iter)
 
 
 def is_token_line(line):
