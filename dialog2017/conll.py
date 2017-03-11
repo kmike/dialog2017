@@ -42,7 +42,7 @@ def to_token(line, opcorpora=False):
     parts[1] = parts[1]  # lemma
     parts[3] = parse_tag(parts[3])  # tag
     # parts[4] = parse_tag(parts[4])  # extra tags
-    return parts
+    return parts[:4]
 
 
 def iter_sentences(corpus, opencorpora=False):

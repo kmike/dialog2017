@@ -4,17 +4,12 @@ import json
 import codecs
 import argparse
 
-import tqdm
-
 from dialog2017 import conll
 
 
 def convert(input_path, output_path, opencorpora):
-    print("reading...")
-    corpus_lines = conll.read_lines(input_path)
-    print("parsing...")
-    sents_iter = conll.iter_sentences(corpus_lines, opencorpora)
-    sents = list(tqdm.tqdm(sents_iter, unit=' sentences'))
+    print("reading & parsing...")
+    sents = conll.read_sents(input_path, opencorpora=opencorpora)
     print("saving to json...")
     with codecs.open(output_path, 'w', encoding='utf8') as f:
         json.dump(sents, f, indent=2, ensure_ascii=False, sort_keys=True)
