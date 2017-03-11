@@ -17,7 +17,7 @@ def convert(input_path, output_path, opencorpora):
     sents = list(tqdm.tqdm(sents_iter, unit=' sentences'))
     print("saving to json...")
     with codecs.open(output_path, 'w', encoding='utf8') as f:
-        json.dump(sents, f, indent=2, ensure_ascii=False)
+        json.dump(sents, f, indent=2, ensure_ascii=False, sort_keys=True)
     print("done.")
 
 

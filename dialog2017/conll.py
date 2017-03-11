@@ -25,7 +25,8 @@ def is_token_line(line):
 
 
 def parse_tag(tag):
-    return tag.split("|") if tag != "_" else []
+    tags_list = tag.split("|") if tag != "_" else []
+    return dict(t.split("=") for t in tags_list)
 
 
 def to_token(line, opcorpora=False):
@@ -56,10 +57,15 @@ def iter_sentences(corpus, opencorpora=False):
         yield sent
 
 
+def tag2conll(parts):
+    if not parts:
+        parts = "_"
+    elif isinstance(parts, (list, tuple)):
+        parts = "|".join(parts)
+    elif isinstance(parts, dict):
+        parts = "|".join("%s=%s" % (k, v) for (k, v) in sorted(parts.items()))
+    return parts
+
+
 def conll_line(idx, word, lemma, pos, tags):
-    if isinstance(tags, list):
-        if tags:
-            tags = "|".join(tags)
-        else:
-            tags = "_"
-    return "\t".join([str(idx), word, lemma, pos, tags])
+    return "\t".join([str(idx), word, lemma, pos, tag2conll(tags)])
