@@ -7,14 +7,17 @@ Parse a corpus::
     sents = read_sents('corpus.txt')
     
 """
-
-
-def read_lines(path):
-    with open(path, 'rb') as f:
-        return f.read().decode('utf8').splitlines()
+from .utils import read_json, read_lines
 
 
 def read_sents(path, opencorpora=False):
+    if path.endswith(".json"):
+        return read_json(path)
+    else:
+        return read_sents_conll(path, opencorpora=opencorpora)
+
+
+def read_sents_conll(path, opencorpora=False):
     corpus_lines = read_lines(path)
     sents_iter = iter_sentences(corpus_lines, opencorpora)
     return list(sents_iter)
@@ -74,3 +77,12 @@ def tag2conll(parts):
 
 def conll_line(idx, word, lemma, pos, tags):
     return "\t".join([str(idx), word, lemma, pos, tag2conll(tags)])
+
+
+def write_sents(sents, fp):
+    """ Write sentences to a file ``fp`` in CONLL format """
+    for sent in sents:
+        for idx, (word, lemma, pos, tags) in enumerate(sent, start=1):
+            line = conll_line(idx, word, lemma, pos, tags)
+            fp.write(line+"\n")
+        fp.write("\n")

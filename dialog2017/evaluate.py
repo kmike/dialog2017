@@ -141,8 +141,8 @@ def measure_conll(path_gold: str, path_pred: str, verbose_max_errors=0):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
-    p.add_argument("path_gold", help="path to a file in conll format")
-    p.add_argument("path_pred", help="path to a file in conll format")
+    p.add_argument("path_gold", help="path to a file in conll or json format")
+    p.add_argument("path_pred", help="path to a file in conll or json format")
     p.add_argument("--n-errors", default=0, type=int,
                    help="print first N errors")
     args = p.parse_args()

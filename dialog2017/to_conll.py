@@ -1,26 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
 import codecs
 import argparse
 
 import tqdm
 
 from dialog2017 import conll
+from .utils import read_json
 
 
 def convert(input_path, output_path):
     print("reading json corpus...")
-    with codecs.open(input_path, 'r', encoding='utf8') as f:
-        sents = json.load(f)
+    sents = read_json(input_path)
 
     print("converting to conll format...")
     with codecs.open(output_path, 'w', encoding='utf8') as f:
-        for sent in tqdm.tqdm(sents, unit=' sentences'):
-            for idx, (word, lemma, pos, tags) in enumerate(sent, start=1):
-                line = conll.conll_line(idx, word, lemma, pos, tags)
-                f.write(line+"\n")
-            f.write("\n")
+        conll.write_sents(tqdm.tqdm(sents, unit=' sentences'), f)
     print("done.")
 
 

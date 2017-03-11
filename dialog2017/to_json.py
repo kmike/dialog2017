@@ -9,7 +9,7 @@ from dialog2017 import conll
 
 def convert(input_path, output_path, opencorpora):
     print("reading & parsing...")
-    sents = conll.read_sents(input_path, opencorpora=opencorpora)
+    sents = conll.read_sents_conll(input_path, opencorpora=opencorpora)
     print("saving to json...")
     with codecs.open(output_path, 'w', encoding='utf8') as f:
         json.dump(sents, f, indent=2, ensure_ascii=False, sort_keys=True)
