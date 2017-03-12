@@ -47,7 +47,6 @@ def simplify_tags(
 def should_match_parses(
         word: str,
         pos_gold: str,
-        tags_gold: Dict[str, str],
     ) -> bool:
     pos = simplify_pos(pos_gold)
     if pos not in POS_TO_MEASURE:
@@ -57,17 +56,14 @@ def should_match_parses(
     return True
 
 
-def parses_match(
+def parses_pos_match(
         word: str,
         pos_gold: str,
-        tags_gold: Dict[str, str],
         pos_pred: str,
-        tags_pred: Dict[str, str],
         verbose: bool,
     ) -> bool:
-    if not should_match_parses(word, pos_gold, tags_gold):
+    if not should_match_parses(word, pos_gold):
         return True
-
     pos_gold = simplify_pos(pos_gold)
     pos_pred = simplify_pos(pos_pred)
 
@@ -76,6 +72,22 @@ def parses_match(
             print("%s: %s != %s" % (word, pos_gold, pos_pred))
         return False
 
+    return True
+
+
+def parses_full_match(
+        word: str,
+        pos_gold: str,
+        tags_gold: Dict[str, str],
+        pos_pred: str,
+        tags_pred: Dict[str, str],
+        verbose: bool,
+    ) -> bool:
+    if not parses_pos_match(word, pos_gold, pos_pred, verbose):
+        return False
+
+    pos_gold = simplify_pos(pos_gold)
+    pos_pred = simplify_pos(pos_pred)
     tags_gold = simplify_tags(pos_gold, tags_gold)
     tags_pred = simplify_tags(pos_pred, tags_pred)
 
@@ -95,9 +107,27 @@ def parses_match(
     return False
 
 
-def rows_match(row_gold: List, row_pred: List, verbose: bool=False) -> bool:
+def rows_pos_match(
+        row_gold: List,
+        row_pred: List,
+        verbose: bool=False
+    ) -> bool:
     assert row_gold[0] == row_pred[0]
-    return parses_match(
+    return parses_pos_match(
+        word=row_gold[0],
+        pos_gold=row_gold[2],
+        pos_pred=row_pred[2],
+        verbose=verbose,
+    )
+
+
+def rows_full_match(
+        row_gold: List,
+        row_pred: List,
+        verbose: bool=False
+    ) -> bool:
+    assert row_gold[0] == row_pred[0]
+    return parses_full_match(
         word=row_gold[0],
         pos_gold=row_gold[2],
         tags_gold=row_gold[3],
@@ -112,24 +142,25 @@ def should_match_rows(row_gold: List, row_pred: List) -> bool:
     return should_match_parses(
         word=row_gold[0],
         pos_gold=row_gold[2],
-        tags_gold=row_gold[3],
     )
 
 
 def measure_sents(sents_gold: List[List], sents_pred: List[List],
                   verbose_max_errors=0):
-    measured, total, correct = 0, 0, 0
+    measured, total, correct_full, correct_pos = 0, 0, 0, 0
 
     for sent_gold, sent_pred in zip(sents_gold, sents_pred):
         for row_gold, row_pred in zip(sent_gold, sent_pred):
             total += 1
             if should_match_rows(row_gold, row_pred):
                 measured += 1
-                verbose = (measured - correct) <= verbose_max_errors
-                if rows_match(row_gold, row_pred, verbose=verbose):
-                    correct += 1
+                verbose = (measured - correct_full) <= verbose_max_errors
+                if rows_pos_match(row_gold, row_pred, verbose=verbose):
+                    correct_pos += 1
+                    if rows_full_match(row_gold, row_pred, verbose=verbose):
+                        correct_full += 1
 
-    return measured, total, correct
+    return measured, total, correct_full, correct_pos
 
 
 def measure_conll(path_gold: str, path_pred: str, verbose_max_errors=0):
@@ -140,10 +171,18 @@ def measure_conll(path_gold: str, path_pred: str, verbose_max_errors=0):
 
 
 def main(path_gold, path_pred, n_errors):
-    measured, total, correct = measure_conll(path_gold, path_pred,
-                                             verbose_max_errors=n_errors)
-    print("{} out of {} (skipped: {}); accuracy: {:.2%}".format(
-        correct, measured, total-measured, correct / measured
+    measured, total, correct_full, correct_pos = measure_conll(
+        path_gold,
+        path_pred,
+        verbose_max_errors=n_errors
+    )
+    print("evaluated {} tokens out of {} ({:.2%})".format(measured, total,
+                                                          measured/total))
+    print("full tags: {} correct; accuracy={:.2%}".format(
+        correct_full, correct_full / measured
+    ))
+    print("POS: {} correct; accuracy={:.2%}".format(
+        correct_pos, correct_pos / measured
     ))
 
 
