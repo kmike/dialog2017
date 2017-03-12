@@ -7,6 +7,8 @@ Parse a corpus::
     sents = read_sents('corpus.txt')
     
 """
+import codecs
+
 from .utils import read_json, read_lines
 
 
@@ -79,10 +81,15 @@ def conll_line(idx, word, lemma, pos, tags):
     return "\t".join([str(idx), word, lemma, pos, tag2conll(tags)])
 
 
-def write_sents(sents, fp):
+def write_sents_to_file(sents, fp):
     """ Write sentences to a file ``fp`` in CONLL format """
     for sent in sents:
         for idx, (word, lemma, pos, tags) in enumerate(sent, start=1):
             line = conll_line(idx, word, lemma, pos, tags)
             fp.write(line+"\n")
         fp.write("\n")
+
+
+def write_sents(sents, path):
+    with codecs.open(path, 'w', encoding='utf8') as f:
+        write_sents_to_file(sents, f)

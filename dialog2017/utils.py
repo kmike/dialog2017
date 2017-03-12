@@ -8,6 +8,11 @@ def read_json(path):
         return json.load(f)
 
 
+def write_json(obj, path):
+    with codecs.open(path, 'w', encoding='utf8') as f:
+        json.dump(obj, f, ensure_ascii=False, indent=2, sort_keys=True)
+
+
 def read_lines(path):
     with open(path, 'rb') as f:
         return f.read().decode('utf8').splitlines()

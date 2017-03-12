@@ -12,11 +12,8 @@ from .utils import read_json
 def convert(input_path, output_path):
     print("reading json corpus...")
     sents = read_json(input_path)
-
     print("converting to conll format...")
-    with codecs.open(output_path, 'w', encoding='utf8') as f:
-        conll.write_sents(tqdm.tqdm(sents, unit=' sentences'), f)
-    print("done.")
+    conll.write_sents(tqdm.tqdm(sents, unit=' sentences'), output_path)
 
 
 if __name__ == '__main__':

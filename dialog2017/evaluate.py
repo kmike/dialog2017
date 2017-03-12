@@ -139,6 +139,14 @@ def measure_conll(path_gold: str, path_pred: str, verbose_max_errors=0):
     return measure_sents(sents_gold, sents_pred, verbose_max_errors)
 
 
+def main(path_gold, path_pred, n_errors):
+    measured, total, correct = measure_conll(path_gold, path_pred,
+                                             verbose_max_errors=n_errors)
+    print("{} out of {} (skipped: {}); accuracy: {:.2%}".format(
+        correct, measured, total-measured, correct / measured
+    ))
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument("path_gold", help="path to a file in conll or json format")
@@ -146,8 +154,4 @@ if __name__ == '__main__':
     p.add_argument("--n-errors", default=0, type=int,
                    help="print first N errors")
     args = p.parse_args()
-    measured, total, correct = measure_conll(args.path_gold, args.path_pred,
-                                             verbose_max_errors=args.n_errors)
-    print("{} out of {} (skipped: {}); accuracy: {:.2%}".format(
-        correct, measured, total-measured, correct / measured
-    ))
+    main(args.path_gold, args.path_pred, args.n_errors)

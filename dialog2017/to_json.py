@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
-import codecs
 import argparse
 
 from dialog2017 import conll
+from dialog2017.utils import write_json
 
 
 def convert(input_path, output_path, opencorpora):
     print("reading & parsing...")
     sents = conll.read_sents_conll(input_path, opencorpora=opencorpora)
     print("saving to json...")
-    with codecs.open(output_path, 'w', encoding='utf8') as f:
-        json.dump(sents, f, indent=2, ensure_ascii=False, sort_keys=True)
+    write_json(sents, output_path)
     print("done.")
 
 
