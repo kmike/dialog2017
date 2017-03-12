@@ -35,8 +35,8 @@ def simplify_tags(
         if g not in cats_to_measure:
             del tags[g]
 
-    # if pos == 'VERB' and tags.get('Tense') in {'Pres', 'Fut'}:
-    #     tags['Tense'] = 'Notpast'
+    if pos == 'VERB' and tags.get('Tense') in {'Pres', 'Fut'}:
+        tags['Tense'] = 'Notpast'
 
     if tags.get('Variant') == 'Short':
         tags['Variant'] = 'Brev'
