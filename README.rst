@@ -73,3 +73,24 @@ prediction and converts resulting tag to Dialog 2017 format.
     saving...
     evaluating...
     544275 out of 797823 (skipped: 547467); accuracy: 68.22%
+
+
+CRF baseline
+============
+
+This is a "obvious" CRF-based baseline: features are grammemes extracted using
+pymorphy2 + words themselves + grammemes of nearby words + nearby words;
+output tags are just tags as-is (so there is ~300 output labels).
+
+::
+
+    python -m dialog2017.crf_baseline \
+        ../morphoRuEval-2017/Baseline/source/gikrya_train.txt \
+        ../morphoRuEval-2017/Baseline/source/gikrya_test.txt \
+        ./data/gikrya-pred-test-crf.txt \
+        model.joblib
+    <..snip..>
+    evaluating...
+    evaluated 171550 tokens out of 270264 (63.47%)
+    full tags: 162213 correct; accuracy=94.56%
+    POS: 169297 correct; accuracy=98.69%
