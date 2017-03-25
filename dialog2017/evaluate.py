@@ -170,7 +170,7 @@ def measure_conll(path_gold: str, path_pred: str, verbose_max_errors=0):
     return measure_sents(sents_gold, sents_pred, verbose_max_errors)
 
 
-def main(path_gold, path_pred, n_errors):
+def main(path_gold, path_pred, n_errors=0):
     measured, total, correct_full, correct_pos = measure_conll(
         path_gold,
         path_pred,
