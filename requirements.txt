@@ -7,3 +7,8 @@ typing
 # use latest git versions
 git+https://github.com/kmike/pymorphy2.git#egg=pymorphy2
 git+https://github.com/kmike/russian-tagsets.git#egg=russian-tagsets
+
+# required for CRF baseline
+joblib==0.11
+sklearn-crfsuite==0.3.5
+git+https://github.com/kmike/morphine.git#egg=morphine
